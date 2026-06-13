@@ -905,15 +905,9 @@
   async function fetchDashboard(cfg) {
     const json = await gasRequest(cfg, {
       action: 'daily_dashboard',
-      auth_token: getAuthToken(),
       _: Date.now(),
     }, { timeout: 300000 });
     if (!json.ok) {
-      if (json.auth === false) {
-        clearSession();
-        lockReport();
-        showAuthError(json.error || 'Phiên hết hạn — đăng nhập lại');
-      }
       throw new Error(json.error || 'API trả về lỗi');
     }
     return json.data;
@@ -1007,7 +1001,6 @@
       if (cfg.GAS_URL) {
         const json = await gasApi(cfg, {
           action: 'telegram',
-          auth_token: getAuthToken(),
           text: text,
           token: cfg.TG_BOT_TOKEN,
           chat_id: cfg.TG_CHAT_ID,
@@ -1106,9 +1099,13 @@
   }
 
   async function init() {
-    setupAuthUI();
-    const authed = await ensureAuth();
-    if (!authed) return;
+    // ===== ĐÃ TẮT ĐĂNG NHẬP GOOGLE — báo cáo mở, không cần xác thực =====
+    document.body.classList.remove('tnt-locked');     // mở khóa nội dung báo cáo
+    const bar = document.getElementById('tnt-session-bar');
+    if (bar) bar.classList.remove('on');              // ẩn thanh email / nút đăng xuất
+    const lockScreen = document.getElementById('tnt-lock-screen');
+    if (lockScreen) lockScreen.style.display = 'none'; // ẩn màn hình đăng nhập (nếu có)
+    clearAuthError();
 
     const cfg = getConfig();
     if (cfg.GAS_URL) {
