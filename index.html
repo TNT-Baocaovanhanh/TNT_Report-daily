@@ -46,7 +46,7 @@
   /* ============ TOP NAV BAR ============ */
   .top-nav {
     background: white; border-bottom: 1px solid var(--border-soft);
-    padding: 14px 28px; display: flex; align-items: center; gap: 28px;
+    padding: 14px 28px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
     position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm);
   }
   .logo-wrap { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
@@ -357,9 +357,145 @@
   .empty { color: #9CA3AF; font-style: italic; font-size: 13px; padding: 8px; text-align: center; }
 
   .footer { text-align: center; color: #9CA3AF; font-size: 11px; padding: 20px; }
+
+  /* Live refresh & settings */
+  .nav-actions { display: flex; gap: 8px; margin-left: auto; flex-shrink: 0; }
+  .nav-btn {
+    padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600;
+    border: 1px solid var(--border-soft); background: white; color: var(--text-medium);
+    cursor: pointer; transition: all 0.18s ease; font-family: inherit;
+  }
+  .nav-btn:hover { border-color: var(--ghn-orange); color: var(--ghn-orange); background: var(--ghn-orange-soft); }
+  .nav-btn.tg { background: #229ED9; color: white; border-color: #229ED9; }
+  .nav-btn.tg:hover { background: #1a8ec0; }
+  .live-status.live-ok { color: #DCFCE7; }
+  .live-status.live-err { color: #FEE2E2; }
+  .live-status.live-warn { color: #FEF3C7; }
+  .live-toast {
+    position: fixed; bottom: 20px; right: 20px; background: #111827; color: #fff;
+    padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 600;
+    opacity: 0; transform: translateY(10px); transition: 0.3s; z-index: 9999; max-width: 360px;
+  }
+  .live-toast.on { opacity: 1; transform: translateY(0); }
+  .live-toast.ok { border-left: 4px solid var(--good); }
+  .live-toast.err { border-left: 4px solid var(--bad); }
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: white; border-radius: 14px; width: 100%; max-width: 480px;
+    box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+  .modal-head {
+    padding: 16px 20px; border-bottom: 1px solid var(--border-soft);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-head h3 { font-size: 15px; font-weight: 700; }
+  .modal-close { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-light); }
+  .modal-body { padding: 16px 20px; }
+  .modal-foot { padding: 12px 20px; border-top: 1px solid var(--border-soft); display: flex; gap: 8px; justify-content: flex-end; }
+  .cfg-field { margin-bottom: 12px; }
+  .cfg-field label { display: block; font-size: 11px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .cfg-field input, .cfg-field textarea {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--border-soft); border-radius: 8px;
+    font-size: 13px; font-family: inherit;
+  }
+  .cfg-field input:focus, .cfg-field textarea:focus { outline: none; border-color: var(--ghn-orange); }
+  .cfg-field textarea { min-height: 180px; resize: vertical; line-height: 1.5; }
+  .cfg-hint { font-size: 11px; color: var(--text-light); margin-top: 8px; line-height: 1.5; }
+  .btn-save { background: var(--ghn-orange); color: white; border: none; padding: 9px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .btn-cancel { background: white; border: 1px solid var(--border-soft); padding: 9px 16px; border-radius: 8px; cursor: pointer; font-family: inherit; }
+  .btn-send-tg { background: #229ED9; color: white; border: none; padding: 9px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: inherit; }
+
+  /* Auth gate */
+  body.tnt-locked #report-app,
+  body.tnt-locked .modal-overlay { display: none !important; }
+  #tnt-auth-gate {
+    display: none; position: fixed; inset: 0; z-index: 10000;
+    background: linear-gradient(135deg, var(--ghn-orange) 0%, var(--ghn-orange-light) 100%);
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  body.tnt-locked #tnt-auth-gate { display: flex; }
+  .auth-box {
+    background: white; border-radius: 16px; padding: 36px 32px; width: 100%; max-width: 400px;
+    box-shadow: var(--shadow-lg); text-align: center;
+  }
+  .auth-box .eyebrow { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 8px; font-weight: 700; }
+  .auth-box h2 { font-size: 20px; font-weight: 800; color: var(--ghn-orange); margin-bottom: 8px; }
+  .auth-box .sub { font-size: 13px; color: var(--text-medium); line-height: 1.6; margin-bottom: 22px; }
+  .auth-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 12px 20px; border: none; border-radius: 10px;
+    background: var(--ghn-orange); color: white; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: 0.15s;
+  }
+  .auth-btn:hover { background: var(--ghn-orange-dark); }
+  .auth-btn img { width: 20px; height: 20px; }
+  .auth-err {
+    display: none; margin-top: 14px; padding: 12px; border-radius: 8px;
+    background: var(--bad-bg); color: var(--bad); font-size: 12px; text-align: left; line-height: 1.6;
+  }
+  .auth-hint { margin-top: 16px; font-size: 11px; color: var(--text-light); line-height: 1.5; }
+  #auth-gas-setup {
+    display: none; text-align: left; margin-bottom: 16px; padding: 14px;
+    background: var(--ghn-orange-soft); border-radius: 10px; border: 1px solid #FFD9B5;
+  }
+  #auth-gas-setup label { display: block; font-size: 11px; font-weight: 700; color: var(--text-medium); margin-bottom: 6px; }
+  #auth-gas-url {
+    width: 100%; padding: 9px 11px; border: 1px solid var(--border-soft); border-radius: 8px;
+    font-size: 12px; font-family: inherit; margin-bottom: 8px;
+  }
+  .auth-btn-secondary {
+    width: 100%; padding: 9px 14px; border-radius: 8px; border: 1px solid var(--ghn-orange);
+    background: white; color: var(--ghn-orange); font-weight: 700; font-size: 12px;
+    cursor: pointer; font-family: inherit;
+  }
+  .auth-btn:disabled { opacity: 0.7; cursor: wait; }
+  #tnt-session-bar {
+    display: none; background: #FFF4ED; border-bottom: 1px solid #FFD9B5;
+    padding: 6px 20px; font-size: 11px; color: var(--text-medium);
+    align-items: center; justify-content: space-between; gap: 12px;
+  }
+  #tnt-session-bar.on { display: flex; }
+  #tnt-session-bar strong { color: var(--ghn-orange); }
+  .btn-logout {
+    background: white; border: 1px solid var(--border-soft); border-radius: 8px;
+    padding: 4px 12px; font-size: 11px; cursor: pointer; font-family: inherit; color: var(--text-medium);
+  }
+  .btn-logout:hover { border-color: var(--bad); color: var(--bad); }
 </style>
 </head>
-<body>
+<body class="tnt-locked">
+
+<!-- Auth gate -->
+<div id="tnt-auth-gate">
+  <div class="auth-box">
+    <div class="eyebrow">Vùng TNT · Báo cáo nội bộ GHN</div>
+    <h2>Đăng nhập để xem</h2>
+    <p class="sub">Chỉ email trong danh sách được phép mới xem được báo cáo. Đăng nhập bằng tài khoản Google.</p>
+    <div id="auth-gas-setup">
+      <label for="auth-gas-url">GAS Web App URL (chỉ cần nhập một lần)</label>
+      <input type="url" id="auth-gas-url" placeholder="https://script.google.com/macros/s/.../exec">
+      <button type="button" class="auth-btn-secondary" id="btn-save-gas-auth">💾 Lưu URL API</button>
+    </div>
+    <div id="google-signin-wrap" style="display:flex;justify-content:center;min-height:44px;"></div>
+    <button type="button" class="auth-btn" id="btn-google-login" style="display:none">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.183 36 24 36c-5.52 0-10-4.48-10-10s4.48-10 10-10c2.29 0 4.41.78 6.09 2.07l5.66-5.66C34.28 9.56 29.36 7 24 7 12.95 7 4 15.95 4 27s8.95 20 20 20 20-8.95 20-20c0-1.34-.14-2.65-.389-3.917z"/><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c2.29 0 4.41.78 6.09 2.07l5.66-5.66C34.28 9.56 29.36 7 24 7 16.318 7 9.656 11.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 47c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.148 0-9.606-3.307-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 47 24 47z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.34-.14-2.65-.389-3.917z"/></svg>
+      Đăng nhập Google
+    </button>
+    <div class="auth-err" id="tnt-auth-err"></div>
+    <p class="auth-hint">Bạn chưa được cấp quyền, hãy liên hệ admin</p>
+  </div>
+</div>
+
+<div id="tnt-session-bar">
+  <span>🔒 Đã đăng nhập: <strong id="tnt-user-email"></strong></span>
+  <button type="button" class="btn-logout">Đăng xuất</button>
+</div>
+
+<div id="report-app">
 
 <!-- TOP NAV BAR với LOGO + TABS -->
 <div class="top-nav">
@@ -371,6 +507,10 @@
     </div>
   </div>
   <div class="tabs"><button class="tab-btn active" data-target="overview">🏠 TỔNG QUAN</button><button class="tab-btn " data-target="metric-gan_giao">% GÁN GIAO</button><button class="tab-btn " data-target="metric-gtc">% GTC</button><button class="tab-btn " data-target="metric-odr">ODR TTS</button><button class="tab-btn " data-target="metric-opr">OPR TTS</button><button class="tab-btn " data-target="metric-fd">FD</button><button class="tab-btn " data-target="metric-rot_lc">RỚT LC</button><button class="tab-btn " data-target="backlog">📦 TỒN ĐỌNG</button></div>
+  <div class="nav-actions">
+    <button class="nav-btn" onclick="TNTReport.openSettings()">⚙️ Cài đặt</button>
+    <button class="nav-btn tg" onclick="TNTReport.openTelegramModal()">📨 Telegram</button>
+  </div>
 </div>
 
 <!-- HERO BANNER -->
@@ -378,10 +518,11 @@
   <div class="hero-content">
     <div class="hero-text">
       <h1>Tổng Quan Vận Hành TNT</h1>
-      <div class="hero-sub">Dữ liệu thực tế ngày: <strong>07/06/2026</strong> · Vùng Tây Nam Thủ Đô: Hòa Bình · Phú Thọ · Vĩnh Phúc · Hà Nam · Nam Định · Ninh Bình</div>
+      <div class="hero-sub">Dữ liệu thực tế ngày: <strong id="hero-date">07/06/2026</strong> · Vùng Tây Nam Thủ Đô: Hòa Bình · Phú Thọ · Vĩnh Phúc · Hà Nam · Nam Định · Ninh Bình</div>
       <div class="hero-actions">
-        <button class="btn btn-primary" onclick="alert('Báo cáo cập nhật mới nhất khi anh chạy Chay-bao-cao.command')">🔄 Làm mới dữ liệu</button>
-        <span class="link-action">Sinh lúc 08/06/2026 14:06</span>
+        <button class="btn btn-primary" id="btn-refresh" onclick="TNTReport.refreshData()">🔄 Làm mới dữ liệu</button>
+        <span class="link-action" id="gen-time">Sinh lúc 08/06/2026 14:06</span>
+        <span class="link-action live-status" id="live-status"></span>
       </div>
     </div>
 
@@ -537,37 +678,37 @@
   
     <section id="overview" class="metric-section active">
       <div class="kpi-grid">
-        <a href="#" onclick="switchTab('metric-gan_giao'); return false;" class="kpi-card kpi-bad">
+        <a href="#" onclick="switchTab('metric-gan_giao'); return false;" class="kpi-card kpi-bad" id="kpi-gan-giao">
           <div class="kpi-label">Tỉ lệ Gán giao</div>
           <div class="kpi-value">86.4%</div>
           <div class="kpi-target">Mục tiêu 95%</div>
           <div class="kpi-trend bad">▼ -3.9 điểm vs hôm trước</div>
         </a>
-        <a href="#" onclick="switchTab('metric-gtc'); return false;" class="kpi-card kpi-bad">
+        <a href="#" onclick="switchTab('metric-gtc'); return false;" class="kpi-card kpi-bad" id="kpi-gtc">
           <div class="kpi-label">Tỉ lệ Giao thành công (GTC)</div>
           <div class="kpi-value">62.3%</div>
           <div class="kpi-target">Mục tiêu 80%</div>
           <div class="kpi-trend bad">▼ -3.6 điểm vs hôm trước</div>
         </a>
-        <a href="#" onclick="switchTab('metric-odr'); return false;" class="kpi-card kpi-good">
+        <a href="#" onclick="switchTab('metric-odr'); return false;" class="kpi-card kpi-good" id="kpi-odr">
           <div class="kpi-label">ODR TTS — Giao đúng hạn</div>
           <div class="kpi-value">96.3%</div>
           <div class="kpi-target">Mục tiêu 95%</div>
           <div class="kpi-trend good">▲ +0.1 điểm vs hôm trước</div>
         </a>
-        <a href="#" onclick="switchTab('metric-opr'); return false;" class="kpi-card kpi-neutral">
+        <a href="#" onclick="switchTab('metric-opr'); return false;" class="kpi-card kpi-neutral" id="kpi-opr">
           <div class="kpi-label">OPR TTS — Lấy đúng hạn</div>
           <div class="kpi-value">—</div>
           <div class="kpi-target">Mục tiêu 95%</div>
           
         </a>
-        <a href="#" onclick="switchTab('metric-fd'); return false;" class="kpi-card kpi-warn">
+        <a href="#" onclick="switchTab('metric-fd'); return false;" class="kpi-card kpi-warn" id="kpi-fd">
           <div class="kpi-label">FD — Tỷ lệ giao thất bại (%Return)</div>
           <div class="kpi-value">8.4%</div>
           <div class="kpi-target">Mục tiêu 5%</div>
           <div class="kpi-trend bad">▲ +0.7 điểm vs hôm trước</div>
         </a>
-        <a href="#" onclick="switchTab('metric-rot_lc'); return false;" class="kpi-card kpi-warn">
+        <a href="#" onclick="switchTab('metric-rot_lc'); return false;" class="kpi-card kpi-warn" id="kpi-rot-lc">
           <div class="kpi-label">Rớt LC — Đơn lấy không thành công</div>
           <div class="kpi-value">7.382</div>
           <div class="kpi-target">Tổng vùng</div>
@@ -580,14 +721,14 @@
             <span class="alert-icon">🚨</span>
             <span class="alert-title">CẢNH BÁO QUAN TRỌNG</span>
           </div>
-          <div class="alert-list"><div class="alert-item"><strong>⚠️ Hòa Bình: Thiếu shipper / tuyến phức tạp</strong> — 143 đơn chưa gán >48h tại Hòa Bình — không đủ người nhận đơn.</div><div class="alert-item"><strong>⚠️ Vĩnh Phúc: 2,379 đơn rớt LC</strong> — chiếm 20.0% volume tỉnh, cần can thiệp ngay.</div></div>
+          <div class="alert-list" id="alert-list-live"><div class="alert-item"><strong>⚠️ Hòa Bình: Thiếu shipper / tuyến phức tạp</strong> — 143 đơn chưa gán >48h tại Hòa Bình — không đủ người nhận đơn.</div><div class="alert-item"><strong>⚠️ Vĩnh Phúc: 2,379 đơn rớt LC</strong> — chiếm 20.0% volume tỉnh, cần can thiệp ngay.</div></div>
         </div>
 
       <div class="section-title-row">
         <h2 class="section-title">📍 6 tỉnh vùng TNT</h2>
         <span class="section-hint">Click vào tab phía trên để xem phân tích chi tiết từng chỉ số</span>
       </div>
-      <div class="prov-grid">
+      <div class="prov-grid" id="prov-grid-live">
         <div class="prov-card">
           <div class="prov-head">
             <span class="prov-dot"></span>
@@ -751,7 +892,7 @@
           <h3>📊 Theo 6 tỉnh</h3>
           <table>
             <thead><tr><th>Tỉnh</th><th class="num">Volume</th><th class="num">Tỉ lệ Gán giao</th></tr></thead>
-            <tbody>
+            <tbody id="gan-prov-tbody">
         <tr>
           <td class="province-name">Hòa Bình</td>
           <td class="num">10.055</td>
@@ -998,7 +1139,7 @@
           <h3>📊 Theo 6 tỉnh</h3>
           <table>
             <thead><tr><th>Tỉnh</th><th class="num">Volume</th><th class="num">Tỉ lệ Giao thành công (GTC)</th></tr></thead>
-            <tbody>
+            <tbody id="gtc-prov-tbody">
         <tr>
           <td class="province-name">Hòa Bình</td>
           <td class="num">10.055</td>
@@ -1249,7 +1390,7 @@
           <h3>📊 Theo 6 tỉnh</h3>
           <table>
             <thead><tr><th>Tỉnh</th><th class="num">Volume</th><th class="num">ODR TTS — Giao đúng hạn</th></tr></thead>
-            <tbody>
+            <tbody id="odr-prov-tbody">
         <tr>
           <td class="province-name">Hà Nam</td>
           <td class="num">2.030</td>
@@ -1478,14 +1619,10 @@
           <h3>📊 Theo 6 tỉnh</h3>
           <table>
             <thead><tr><th>Tỉnh</th><th class="num">Volume</th><th class="num">OPR TTS — Lấy đúng hạn</th></tr></thead>
-            <tbody></tbody>
+            <tbody id="opr-prov-tbody"></tbody>
           </table>
         </div>
       </div>
-
-      
-
-      
 
       <div class="card">
         <h3>📈 Xu hướng 7 ngày</h3>
@@ -1539,14 +1676,14 @@
         <div class="big-card big-warn">
           <div class="big-label">Toàn vùng TNT</div>
           <div class="big-value">8.4%</div>
-          <div class="big-sub">Tỷ lệ %Return trung bình các BC ngày 2026-06-07</div>
+          <div class="big-sub">Tỷ lệ %Return trung bình các BC — đang tải...</div>
           <div class="big-target good">▲ 3.4 điểm so với mục tiêu 5%</div>
         </div>
         <div class="card">
           <h3>📊 Theo 6 tỉnh</h3>
           <table>
             <thead><tr><th>Tỉnh</th><th class="num">Volume</th><th class="num">FD — Tỷ lệ giao thất bại (%Return)</th></tr></thead>
-            <tbody>
+            <tbody id="fd-prov-tbody">
         <tr>
           <td class="province-name">Hà Nam</td>
           <td class="num">27</td>
@@ -1780,14 +1917,14 @@
         <div class="big-card big-neutral">
           <div class="big-label">Toàn vùng TNT</div>
           <div class="big-value">7.382</div>
-          <div class="big-sub">Số đơn không lấy được trong ngày 2026-06-07 (Volume − vol_ltc)</div>
+          <div class="big-sub">Số đơn không lấy được — đang tải...</div>
           
         </div>
         <div class="card">
           <h3>📊 Theo 6 tỉnh</h3>
           <table>
             <thead><tr><th>Tỉnh</th><th class="num">Volume</th><th class="num">Rớt LC — Đơn lấy không thành công</th></tr></thead>
-            <tbody>
+            <tbody id="rot-lc-prov-tbody">
         <tr>
           <td class="province-name">Vĩnh Phúc</td>
           <td class="num">11.902</td>
@@ -2175,6 +2312,80 @@
 
 <div class="footer">Dashboard tự sinh từ Google Sheet "Data TNT" · Anh Doanh — GĐ vùng TNT · GHN</div>
 
+</div><!-- /#report-app -->
+
+<!-- Settings modal -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>⚙️ Cài đặt báo cáo</h3>
+      <button class="modal-close" onclick="TNTReport.closeSettings()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="cfg-field">
+        <label>GAS Web App URL</label>
+        <input type="url" id="cfg-gas-url" placeholder="https://script.google.com/macros/s/.../exec">
+        <div class="cfg-hint">Deploy file <code>GAS-TNT-Daily-API.gs</code> vào Apps Script của sheet Data TNT, rồi dán URL Web App tại đây.</div>
+      </div>
+      <div class="cfg-field">
+        <label>Telegram Bot Token</label>
+        <input type="text" id="cfg-tg-token" placeholder="123456:ABC-DEF...">
+      </div>
+      <div class="cfg-field">
+        <label>Telegram Chat ID</label>
+        <input type="text" id="cfg-tg-chat" placeholder="-1002129965766">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="TNTReport.closeSettings()">Đóng</button>
+      <button class="btn-save" onclick="TNTReport.saveSettings()">💾 Lưu &amp; Làm mới</button>
+    </div>
+  </div>
+</div>
+
+<!-- Telegram modal -->
+<div class="modal-overlay" id="tg-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>📨 Gửi chỉ số qua Telegram</h3>
+      <button class="modal-close" onclick="TNTReport.closeTelegramModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="cfg-field">
+        <label>Nội dung tin nhắn (HTML)</label>
+        <textarea id="tg-message"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="TNTReport.closeTelegramModal()">Hủy</button>
+      <button class="btn-send-tg" id="btn-send-tg" onclick="TNTReport.sendTelegram()">📨 Gửi ngay</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cấu hình mặc định (admin điền 1 lần khi deploy) -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+window.TNT_CONFIG = window.TNT_CONFIG || {
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbzz_HkCKvTW6KRuIe2TrYoZBs7k1e1Fm7j296tSfSNly8XavV92NwJDEJzoBF0hiP1eTA/exec',  // vd: 'https://script.google.com/macros/s/XXXX/exec'
+  GOOGLE_CLIENT_ID: '96848780552-cg9msgiqmtuan9ri9ov5ftvf2jp2om3m.apps.googleusercontent.com'
+};
+</script>
+<script src="report-live.js?v=20260611b"></script>
+<script>
+/* Phát hiện report-live.js không tải được (sai tên file trên GitHub) */
+document.addEventListener('DOMContentLoaded', function () {
+  setTimeout(function () {
+    if (!window.TNTReport || typeof window.TNTReport.login !== 'function') {
+      var err = document.getElementById('tnt-auth-err');
+      if (err) {
+        err.style.display = 'block';
+        err.innerHTML = '<strong>Lỗi tải report-live.js</strong><br>Kiểm tra repo GitHub có file <code>report-live.js</code> (đúng đuôi .js), không phải <code>report-live</code>.';
+      }
+    }
+  }, 800);
+});
+</script>
 <script>
 function switchTab(targetId) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -2191,20 +2402,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => switchTab(btn.dataset.target));
 });
 
-Object.entries(window.__chart_data__ || {}).forEach(([id, cfg]) => {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const isBar = (cfg.type === 'bar');
-  new Chart(el, {
-    type: cfg.type || 'line',
-    data: { labels: cfg.labels, datasets: cfg.datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', display: !isBar } },
-      scales: { y: { beginAtZero: isBar, title: { display: true, text: cfg.y_label } } }
-    }
-  });
-});
+/* Biểu đồ được vẽ sau khi Làm mới dữ liệu (report-live.js updateChart) */
 </script>
 
 </body>
