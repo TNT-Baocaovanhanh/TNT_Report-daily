@@ -1,0 +1,12 @@
+{
+  "updated": "2026-06-15",
+  "note": "FILE PHÂN QUYỀN DUY NHẤT. Sửa file này trên GitHub (repo anhquanvp/Reportdaily) để cấp/thu hồi quyền xem báo cáo cho cả 2 site. GAS đọc lại sau tối đa 5 phút, KHÔNG cần deploy lại GAS. Quy tắc: email trong 'emails' luôn được phép; bất kỳ email kết thúc bằng domain trong 'domains' đều được phép.",
+  "domains": [
+    "@ghn.vn"
+  ],
+  "emails": [
+    "doanhnv@ghn.vn",
+    "quanpv@ghn.vn",
+    "anhquan.94vp@gmail.com"
+  ]
+}
